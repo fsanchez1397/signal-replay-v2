@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter, useParams } from 'next/navigation';
-import { WorkflowStepSchema, type WorkflowStep, type Workflow } from '@/lib/schemas/workflow';
-import { Plus, Trash2, Save, ArrowUp, ArrowDown } from 'lucide-react';
-import { StepEditor } from '@/components/StepEditor';
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter, useParams } from "next/navigation";
+import {
+  WorkflowStepSchema,
+  type WorkflowStep,
+  type Workflow,
+} from "@/lib/schemas/workflow";
+import { Plus, Trash2, Save, ArrowUp, ArrowDown } from "lucide-react";
+import { StepEditor } from "@/components/StepEditor";
 
 export default function EditWorkflowPage() {
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const supabase = createClient();
   const router = useRouter();
   const params = useParams();
@@ -23,9 +27,9 @@ export default function EditWorkflowPage() {
 
   const loadWorkflow = async () => {
     const { data, error } = await supabase
-      .from('workflows')
-      .select('*')
-      .eq('id', id)
+      .from("workflows")
+      .select("*")
+      .eq("id", id)
       .single();
 
     if (error) {
@@ -40,7 +44,7 @@ export default function EditWorkflowPage() {
     if (!workflow) return;
 
     setSaving(true);
-    setError('');
+    setError("");
 
     try {
       // Validate workflow steps
@@ -53,7 +57,7 @@ export default function EditWorkflowPage() {
       });
 
       const { error: updateError } = await supabase
-        .from('workflows')
+        .from("workflows")
         .update({
           name: workflow.name,
           description: workflow.description,
@@ -62,12 +66,12 @@ export default function EditWorkflowPage() {
           variables: workflow.variables,
           settings: workflow.settings,
         })
-        .eq('id', id);
+        .eq("id", id);
 
       if (updateError) {
         setError(updateError.message);
       } else {
-        alert('Workflow saved successfully!');
+        alert("Workflow saved successfully!");
       }
     } catch (err: any) {
       setError(err.message);
@@ -81,11 +85,11 @@ export default function EditWorkflowPage() {
 
     const newStep: WorkflowStep = {
       id: crypto.randomUUID(),
-      type: 'goto',
-      url: '',
+      type: "goto",
+      url: "",
       timeout: 5000,
       screenshot: false,
-      waitUntil: 'load',
+      waitUntil: "load",
     };
 
     setWorkflow({
@@ -117,14 +121,17 @@ export default function EditWorkflowPage() {
     });
   };
 
-  const handleMoveStep = (index: number, direction: 'up' | 'down') => {
+  const handleMoveStep = (index: number, direction: "up" | "down") => {
     if (!workflow) return;
 
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    const newIndex = direction === "up" ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= workflow.steps.length) return;
 
     const newSteps = [...workflow.steps];
-    [newSteps[index], newSteps[newIndex]] = [newSteps[newIndex], newSteps[index]];
+    [newSteps[index], newSteps[newIndex]] = [
+      newSteps[newIndex],
+      newSteps[index],
+    ];
 
     setWorkflow({
       ...workflow,
@@ -153,7 +160,9 @@ export default function EditWorkflowPage() {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{workflow.name}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {workflow.name}
+            </h1>
             {workflow.description && (
               <p className="text-sm text-gray-600">{workflow.description}</p>
             )}
@@ -165,10 +174,10 @@ export default function EditWorkflowPage() {
               className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
             >
               <Save className="w-5 h-5" />
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? "Saving..." : "Save"}
             </button>
             <button
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push("/dashboard")}
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
               Back
@@ -195,7 +204,10 @@ export default function EditWorkflowPage() {
                 onChange={(e) =>
                   setWorkflow({
                     ...workflow,
-                    settings: { ...workflow.settings, supervisedMode: e.target.checked },
+                    settings: {
+                      ...workflow.settings,
+                      supervisedMode: e.target.checked,
+                    },
                   })
                 }
                 className="rounded border-gray-300"
@@ -209,7 +221,10 @@ export default function EditWorkflowPage() {
                 onChange={(e) =>
                   setWorkflow({
                     ...workflow,
-                    settings: { ...workflow.settings, pauseOnError: e.target.checked },
+                    settings: {
+                      ...workflow.settings,
+                      pauseOnError: e.target.checked,
+                    },
                   })
                 }
                 className="rounded border-gray-300"
@@ -239,7 +254,7 @@ export default function EditWorkflowPage() {
               No steps yet. Add your first step to get started!
             </div>
           ) : (
-            workflow.steps.map((step, index) => (
+            workflow.steps?.map((step, index) => (
               <div key={step.id} className="bg-white rounded-lg shadow p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-medium text-gray-900">
@@ -247,14 +262,14 @@ export default function EditWorkflowPage() {
                   </h3>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => handleMoveStep(index, 'up')}
+                      onClick={() => handleMoveStep(index, "up")}
                       disabled={index === 0}
                       className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
                     >
                       <ArrowUp className="w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => handleMoveStep(index, 'down')}
+                      onClick={() => handleMoveStep(index, "down")}
                       disabled={index === workflow.steps.length - 1}
                       className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
                     >
@@ -270,7 +285,9 @@ export default function EditWorkflowPage() {
                 </div>
                 <StepEditor
                   step={step}
-                  onChange={(updatedStep) => handleUpdateStep(index, updatedStep)}
+                  onChange={(updatedStep) =>
+                    handleUpdateStep(index, updatedStep)
+                  }
                 />
               </div>
             ))
@@ -280,4 +297,3 @@ export default function EditWorkflowPage() {
     </div>
   );
 }
-

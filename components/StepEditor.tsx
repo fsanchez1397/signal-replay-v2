@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { type WorkflowStep } from '@/lib/schemas/workflow';
+import { type WorkflowStep } from "@/lib/schemas/workflow";
 
 interface StepEditorProps {
   step: WorkflowStep;
@@ -8,7 +8,7 @@ interface StepEditorProps {
 }
 
 export function StepEditor({ step, onChange }: StepEditorProps) {
-  const handleTypeChange = (type: WorkflowStep['type']) => {
+  const handleTypeChange = (type: WorkflowStep["type"]) => {
     // Reset step with new type
     const baseStep = {
       id: step.id,
@@ -20,45 +20,55 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
     let newStep: WorkflowStep;
 
     switch (type) {
-      case 'goto':
-        newStep = { ...baseStep, type: 'goto', url: '', waitUntil: 'load' };
+      case "goto":
+        newStep = { ...baseStep, type: "goto", url: "", waitUntil: "load" };
         break;
-      case 'click':
+      case "click":
         newStep = {
           ...baseStep,
-          type: 'click',
-          selector: { type: 'css', value: '' },
+          type: "click",
+          selector: { type: "css", value: "" },
           waitForNavigation: false,
           clickCount: 1,
         };
         break;
-      case 'type':
+      case "type":
         newStep = {
           ...baseStep,
-          type: 'type',
-          selector: { type: 'css', value: '' },
-          text: '',
+          type: "type",
+          selector: { type: "css", value: "" },
+          text: "",
           clearFirst: true,
           pressEnter: false,
         };
         break;
-      case 'wait':
-        newStep = { ...baseStep, type: 'wait', waitType: 'time', value: 1000 };
+      case "wait":
+        newStep = { ...baseStep, type: "wait", waitType: "time", value: 1000 };
         break;
-      case 'scroll':
-        newStep = { ...baseStep, type: 'scroll', direction: 'down', amount: 500 };
-        break;
-      case 'scrape':
+      case "scroll":
         newStep = {
           ...baseStep,
-          type: 'scrape',
-          selector: { type: 'css', value: '' },
+          type: "scroll",
+          direction: "down",
+          amount: 500,
+        };
+        break;
+      case "scrape":
+        newStep = {
+          ...baseStep,
+          type: "scrape",
+          selector: { type: "css", value: "" },
           multiple: false,
-          storeAs: '',
+          storeAs: "",
         };
         break;
       default:
-        newStep = { ...baseStep, type: 'wait', waitType: 'time', value: 1000 } as WorkflowStep;
+        newStep = {
+          ...baseStep,
+          type: "wait",
+          waitType: "time",
+          value: 1000,
+        } as WorkflowStep;
     }
 
     onChange(newStep);
@@ -73,8 +83,10 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </label>
         <select
           value={step.type}
-          onChange={(e) => handleTypeChange(e.target.value as WorkflowStep['type'])}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          onChange={(e) =>
+            handleTypeChange(e.target.value as WorkflowStep["type"])
+          }
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
         >
           <option value="goto">Navigate (goto)</option>
           <option value="click">Click</option>
@@ -86,9 +98,11 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
       </div>
 
       {/* Type-specific fields */}
-      {step.type === 'goto' && (
+      {step.type === "goto" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            URL
+          </label>
           <input
             type="url"
             value={step.url}
@@ -99,7 +113,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </div>
       )}
 
-      {step.type === 'click' && (
+      {step.type === "click" && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             CSS Selector
@@ -119,7 +133,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </div>
       )}
 
-      {step.type === 'type' && (
+      {step.type === "type" && (
         <>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -153,14 +167,14 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </>
       )}
 
-      {step.type === 'wait' && (
+      {step.type === "wait" && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Wait Duration (ms)
           </label>
           <input
             type="number"
-            value={typeof step.value === 'number' ? step.value : 1000}
+            value={typeof step.value === "number" ? step.value : 1000}
             onChange={(e) =>
               onChange({ ...step, value: parseInt(e.target.value) })
             }
@@ -170,7 +184,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </div>
       )}
 
-      {step.type === 'scroll' && (
+      {step.type === "scroll" && (
         <>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -189,7 +203,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
               <option value="bottom">To Bottom</option>
             </select>
           </div>
-          {(step.direction === 'up' || step.direction === 'down') && (
+          {(step.direction === "up" || step.direction === "down") && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Amount (pixels)
@@ -207,7 +221,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </>
       )}
 
-      {step.type === 'scrape' && (
+      {step.type === "scrape" && (
         <>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -248,7 +262,7 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
         </label>
         <input
           type="text"
-          value={step.description || ''}
+          value={step.description || ""}
           onChange={(e) => onChange({ ...step, description: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
           placeholder="What does this step do?"
@@ -260,7 +274,9 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
           <input
             type="checkbox"
             checked={step.screenshot}
-            onChange={(e) => onChange({ ...step, screenshot: e.target.checked })}
+            onChange={(e) =>
+              onChange({ ...step, screenshot: e.target.checked })
+            }
             className="rounded border-gray-300"
           />
           <span className="text-sm text-gray-700">Take Screenshot</span>
@@ -269,4 +285,3 @@ export function StepEditor({ step, onChange }: StepEditorProps) {
     </div>
   );
 }
-

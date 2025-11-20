@@ -117,7 +117,7 @@ export default function DashboardPage() {
                         </p>
                       )}
                       <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
-                        <span>{workflow.steps.length} steps</span>
+                        <span>{workflow.steps?.length ?? 0} steps</span>
                         {workflow.tags && workflow.tags.length > 0 && (
                           <div className="flex gap-1">
                             {workflow.tags.map((tag) => (
